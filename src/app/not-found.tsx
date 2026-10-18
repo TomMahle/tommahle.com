@@ -10,14 +10,14 @@ export default function NotFound() {
         We couldn’t find that page
       </h1>
       <p className="text-muted">
-        The park or page you’re looking for doesn’t exist. It may have been
-        removed, or the link may be wrong.
+        The page you’re looking for doesn’t exist. It may have been removed, or
+        the link may be wrong.
       </p>
       <Link
         href="/"
         className="inline-flex min-h-11 items-center rounded-md bg-accent px-4 font-semibold text-on-accent hover:bg-accent-hover"
       >
-        Browse all parks
+        Go to the home page
       </Link>
     </div>
   );

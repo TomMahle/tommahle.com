@@ -11,11 +11,11 @@ import {
 
 test.describe("home page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/find-a-park");
   });
 
   test("lists every park alphabetically", async ({ page }) => {
-    await expect(page).toHaveTitle("Find a Park · New York City");
+    await expect(page).toHaveTitle("Find a Park · New York City · Tom Mahle");
     await expect(
       page.getByRole("heading", { level: 1, name: "Find a park" }),
     ).toBeVisible();
@@ -58,7 +58,7 @@ test.describe("home page", () => {
     expect(parseFloat(outline.width)).toBeGreaterThanOrEqual(2);
 
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\/parks\/prospect-park$/);
+    await expect(page).toHaveURL(/\/find-a-park\/parks\/prospect-park$/);
     await expect(
       page.getByRole("heading", { level: 1, name: "Prospect Park" }),
     ).toBeVisible();
@@ -123,7 +123,7 @@ test.describe("home page", () => {
     await expect(details).toBeFocused();
 
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\/parks\/central-plaza-green$/);
+    await expect(page).toHaveURL(/\/find-a-park\/parks\/central-plaza-green$/);
   });
 
   test("search filters the list and the map together", async ({
@@ -167,7 +167,7 @@ test.describe("home page", () => {
     await page
       .getByRole("link", { name: "View park details: Prospect Park" })
       .click();
-    await expect(page).toHaveURL(/\/parks\/prospect-park$/);
+    await expect(page).toHaveURL(/\/find-a-park\/parks\/prospect-park$/);
 
     await page.goBack();
     await expect(
@@ -181,7 +181,7 @@ test.describe("home page", () => {
 
 test.describe("phone layout", { tag: "@phone" }, () => {
   test("shows the list first and the map on request", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/find-a-park");
     const list = page.getByRole("list", { name: "Parks" });
     const map = page.locator(".park-map");
 
@@ -202,7 +202,7 @@ test.describe("when the map can't load", () => {
     page,
   }, testInfo) => {
     await page.route(TILES_URL_PATTERN, (route) => route.abort());
-    await page.goto("/");
+    await page.goto("/find-a-park");
     await openMapView(page, testInfo.project.name);
 
     await expect(
@@ -223,13 +223,13 @@ test.describe("when the map can't load", () => {
       if (body.includes("leaflet-container")) await route.abort();
       else await route.fulfill({ response, body });
     });
-    await page.goto("/");
+    await page.goto("/find-a-park");
     await openMapView(page, testInfo.project.name);
 
     await expect(page.getByText("The map couldn’t be loaded.")).toBeVisible();
     if (!isMobile(testInfo.project.name)) {
       await page.getByRole("link", { name: "Prospect Park" }).click();
-      await expect(page).toHaveURL(/\/parks\/prospect-park$/);
+      await expect(page).toHaveURL(/\/find-a-park\/parks\/prospect-park$/);
     }
     // Stop intercepting before the page closes; otherwise an in-flight
     // handler can throw "Response has been disposed", which Playwright then

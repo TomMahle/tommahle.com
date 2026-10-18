@@ -20,7 +20,7 @@ export default function Error({
         Something went wrong
       </h1>
       <p className="text-muted">
-        This page didn’t load properly. Try again, or go back to the park list.
+        This page didn’t load properly. Try again, or go to the home page.
       </p>
       <div className="flex flex-wrap gap-3">
         <button
@@ -34,7 +34,7 @@ export default function Error({
           href="/"
           className="inline-flex min-h-11 items-center rounded-md border border-border px-4 font-semibold hover:bg-surface-muted"
         >
-          All parks
+          Home page
         </Link>
       </div>
     </div>

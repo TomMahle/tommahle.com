@@ -50,7 +50,7 @@ describe("ParkList", () => {
     const { full } = renderList();
     expect(
       within(full).getByRole("link", { name: "Full Park" }),
-    ).toHaveAttribute("href", "/parks/full-park");
+    ).toHaveAttribute("href", "/find-a-park/parks/full-park");
   });
 
   it("summarizes a park's details and limits the amenity chips", () => {

@@ -6,6 +6,7 @@ import { cn } from "@/lib/cn";
 import { amenityLabel } from "@/lib/parks/amenities";
 import { formatAcreage, formatRating } from "@/lib/parks/format";
 import type { Park } from "@/lib/parks/types";
+import { parkPath } from "@/lib/parks/routes";
 
 /** How many amenities a card shows before "+N more". */
 const CARD_AMENITY_LIMIT = 4;
@@ -83,7 +84,7 @@ function ParkCard({
     >
       <h2 id={headingId} className="text-lg leading-snug font-semibold">
         <Link
-          href={`/parks/${park.id}`}
+          href={parkPath(park.id)}
           className="rounded-sm text-accent underline-offset-2 hover:text-accent-hover hover:underline"
         >
           {park.name}

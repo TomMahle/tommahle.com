@@ -1,19 +1,30 @@
-import { ParkExplorer } from "@/components/park-explorer";
-import { getParks } from "@/lib/parks/data";
+import { ProjectCard } from "@/components/project-card";
+import { PROJECTS } from "@/content/projects";
 
 export default function Home() {
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Find a park
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-10 sm:px-6">
+      <section className="flex flex-col gap-3">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          Tom Mahle
         </h1>
-        <p className="text-muted">
-          Browse New York City’s parks as a list or on a map, then open one to
-          see its hours, amenities and directions.
+        {/* TODO(Tom): replace with your own intro. */}
+        <p className="text-lg text-muted">
+          I build web apps. Here are some projects I’ve worked on.
         </p>
-      </div>
-      <ParkExplorer parks={getParks()} />
+      </section>
+      <section aria-labelledby="projects" className="flex flex-col gap-4">
+        <h2 id="projects" className="text-2xl font-semibold tracking-tight">
+          Projects
+        </h2>
+        <ul role="list" className="flex flex-col gap-4">
+          {PROJECTS.map((project) => (
+            <li key={project.slug}>
+              <ProjectCard project={project} />
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

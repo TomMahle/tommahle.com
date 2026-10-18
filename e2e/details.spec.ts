@@ -2,7 +2,7 @@ import { expect, serveListedPhotos, test } from "./fixtures";
 
 test.describe("park details page", () => {
   test("shows everything known about a park", async ({ page }) => {
-    await page.goto("/parks/prospect-park");
+    await page.goto("/find-a-park/parks/prospect-park");
 
     await expect(page).toHaveTitle("Prospect Park · Find a Park");
     await expect(
@@ -36,18 +36,18 @@ test.describe("park details page", () => {
     page,
   }) => {
     // No description in the data.
-    await page.goto("/parks/old-mill-botanical-garden");
+    await page.goto("/find-a-park/parks/old-mill-botanical-garden");
     await expect(page.getByText("No description available.")).toBeVisible();
 
     // No address in the data.
-    await page.goto("/parks/highland-dog-park");
+    await page.goto("/find-a-park/parks/highland-dog-park");
     const visit = page.getByRole("region", { name: "Plan your visit" });
     await expect(visit.getByText("Not listed")).toHaveCount(1);
     await expect(visit).toContainText("Address");
 
     // No rating and no photos in the data (and no fallback): the photos
     // section is left out rather than shown empty.
-    await page.goto("/parks/cedar-hill-nature-preserve");
+    await page.goto("/find-a-park/parks/cedar-hill-nature-preserve");
     await expect(
       page.getByRole("heading", { level: 2, name: "About" }),
     ).toBeVisible();
@@ -60,7 +60,7 @@ test.describe("park details page", () => {
   test("replaces photos that fail to load with a labeled placeholder", async ({
     page,
   }) => {
-    await page.goto("/parks/old-mill-botanical-garden");
+    await page.goto("/find-a-park/parks/old-mill-botanical-garden");
     const placeholders = page.getByRole("img", { name: /unavailable/ });
     await expect(placeholders).toHaveCount(2);
     await expect(placeholders.first()).toHaveAccessibleName(
@@ -73,7 +73,7 @@ test.describe("park details page", () => {
   }) => {
     // Prospect Park's listed photo URLs don't exist; it's a real park, so
     // openly licensed photos from Wikimedia Commons are shown instead.
-    await page.goto("/parks/prospect-park");
+    await page.goto("/find-a-park/parks/prospect-park");
     await expect(
       page.getByRole("img", { name: /Prospect Park Boathouse/ }),
     ).toBeVisible();
@@ -89,7 +89,7 @@ test.describe("park details page", () => {
     page,
   }) => {
     await serveListedPhotos(page);
-    await page.goto("/parks/prospect-park");
+    await page.goto("/find-a-park/parks/prospect-park");
     await expect(
       page.getByRole("img", { name: "Prospect Park, photo 1 of 2" }),
     ).toBeVisible();
@@ -101,7 +101,7 @@ test.describe("park details page", () => {
   });
 
   test("shows a still map of the park's location", async ({ page }) => {
-    await page.goto("/parks/lakeshore-point");
+    await page.goto("/find-a-park/parks/lakeshore-point");
     const visit = page.getByRole("region", { name: "Plan your visit" });
     const preview = visit.getByRole("figure", {
       name: /Map of Lakeshore Point’s listed location/,
@@ -118,21 +118,21 @@ test.describe("park details page", () => {
   });
 
   test("“All parks” returns to the list", async ({ page }) => {
-    await page.goto("/parks/lakeshore-point");
+    await page.goto("/find-a-park/parks/lakeshore-point");
     await page.getByRole("link", { name: "All parks" }).click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/find-a-park$/);
     await expect(
       page.getByRole("heading", { name: "Find a park" }),
     ).toBeVisible();
   });
 
   test("an unknown park returns a real 404 page", async ({ page }) => {
-    const response = await page.goto("/parks/no-such-park");
+    const response = await page.goto("/find-a-park/parks/no-such-park");
     expect(response?.status()).toBe(404);
     await expect(
       page.getByRole("heading", { name: "We couldn’t find that page" }),
     ).toBeVisible();
     await page.getByRole("link", { name: "Browse all parks" }).click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/find-a-park$/);
   });
 });

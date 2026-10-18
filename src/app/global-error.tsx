@@ -10,13 +10,13 @@ export default function GlobalError({ retry }: { retry: () => void }) {
   return (
     <html lang="en">
       <body className="font-sans">
-        <title>Something went wrong · Find a Park</title>
+        <title>Something went wrong · Tom Mahle</title>
         <main className="mx-auto flex max-w-2xl flex-col items-start gap-4 px-4 py-16 sm:px-6">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
             Something went wrong
           </h1>
           <p className="text-muted">
-            Find a Park didn’t load properly. Please try again.
+            This site didn’t load properly. Please try again.
           </p>
           <button
             type="button"

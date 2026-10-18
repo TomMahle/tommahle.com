@@ -11,6 +11,7 @@ import { MAX_BOUNDS, MIN_ZOOM, TILE_ATTRIBUTION } from "./map-config";
 import { markerIcon } from "./map-marker";
 import { StableMapContainer } from "./stable-map-container";
 import { VectorTileLayer } from "./vector-tile-layer";
+import { parkPath } from "@/lib/parks/routes";
 
 /** Zoom used when jumping to a single park from the list. */
 const PARK_ZOOM = 15;
@@ -218,7 +219,7 @@ function ParkPopup({ park }: { park: ParkWithCoordinates }) {
       )}
       <Link
         ref={linkRef}
-        href={`/parks/${park.id}`}
+        href={parkPath(park.id)}
         aria-label={`View park details: ${park.name}`}
         // Focus lands on this link, so let it carry the summary too: screen
         // readers announce the address and amenities as its description.

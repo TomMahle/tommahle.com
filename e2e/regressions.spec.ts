@@ -10,7 +10,7 @@ test("going Back doesn't replay an earlier “Show on map”", async ({
 }, testInfo) => {
   // React re-runs effects when Next.js re-shows the hidden home page, which
   // used to jump the map back to the last "Show on map" park.
-  await page.goto("/");
+  await page.goto("/find-a-park");
   await page
     .getByRole("button", { name: "Show on map: Prospect Park" })
     .click();
@@ -29,7 +29,7 @@ test("going Back doesn't replay an earlier “Show on map”", async ({
     page.getByRole("link", { name: "View park details: Riverside Commons" }),
   ).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/parks\/riverside-commons$/);
+  await expect(page).toHaveURL(/\/find-a-park\/parks\/riverside-commons$/);
 
   await page.goBack();
   await expect(
@@ -46,12 +46,12 @@ test("going Back doesn't replay an earlier “Show on map”", async ({
 test("focus moves to the new page's heading, and back to the park on return", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/find-a-park");
   const link = page.getByRole("link", { name: "Lakeshore Point" });
   await tabTo(page, link);
   await page.keyboard.press("Enter");
 
-  await expect(page).toHaveURL(/\/parks\/lakeshore-point$/);
+  await expect(page).toHaveURL(/\/find-a-park\/parks\/lakeshore-point$/);
   await expect(
     page.getByRole("heading", { level: 1, name: "Lakeshore Point" }),
   ).toBeFocused();
@@ -63,7 +63,7 @@ test("focus moves to the new page's heading, and back to the park on return", as
 test("searching away the selected park clears the selection", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/find-a-park");
   await page
     .getByRole("button", { name: "Show on map: Prospect Park" })
     .click();
@@ -84,7 +84,7 @@ test("markers sit exactly on their park's location", async ({
 }, testInfo) => {
   // Leaflet's display:block used to override the pin's centering, drawing
   // the tip a few pixels off the coordinates.
-  await page.goto("/");
+  await page.goto("/find-a-park");
   await openMapView(page, testInfo.project.name);
   const box = await page
     .locator('.park-marker[data-map-marker="prospect-park"]')
@@ -102,7 +102,7 @@ test.describe("on a 320px-wide screen", () => {
   test.use({ viewport: { width: 320, height: 640 } });
 
   test("a park's popup fits inside the map", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/find-a-park");
     await page
       .getByRole("button", { name: "Show on map: Veterans Memorial Field" })
       .click();
@@ -119,7 +119,7 @@ test.describe("on a 320px-wide screen", () => {
 test("the map itself is named and explains its keyboard controls", async ({
   page,
 }, testInfo) => {
-  await page.goto("/");
+  await page.goto("/find-a-park");
   await openMapView(page, testInfo.project.name);
   const map = page.getByRole("group", { name: "Map of parks" });
   await expect(map).toBeVisible();
@@ -134,7 +134,7 @@ test(
   async ({ page }) => {
     // Opening the popup after an animated pan used to stop the pan partway
     // (Leaflet's popup auto-pan cancels it), leaving the park off-center.
-    await page.goto("/");
+    await page.goto("/find-a-park");
     await page
       .getByRole("button", { name: "Show on map: Prospect Park" })
       .click();
@@ -161,7 +161,7 @@ test(
     tag: "@desktop", // the feature only exists where list and map are side by side
   },
   async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/find-a-park");
     await expect(page.locator(".park-marker")).toHaveCount(12);
     // Map tiles are canvases that protomaps-leaflet keys as "x:y:zoom".
     const zoom = () =>

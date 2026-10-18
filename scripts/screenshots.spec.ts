@@ -35,8 +35,19 @@ for (const [device, viewport] of Object.entries(sizes)) {
     test.describe(`${device} ${colorScheme}`, () => {
       test.use({ viewport, colorScheme });
 
-      test("home", async ({ page }) => {
+      test("portfolio", async ({ page }) => {
         await page.goto("/");
+        await expect(
+          page.getByRole("article", { name: "Find a Park" }),
+        ).toBeVisible();
+        await page.screenshot({
+          path: `${OUT}/${device}-${colorScheme}-portfolio.png`,
+          fullPage: true,
+        });
+      });
+
+      test("home", async ({ page }) => {
+        await page.goto("/find-a-park");
         if (device === "phone") {
           await page.screenshot({
             path: `${OUT}/${device}-${colorScheme}-list.png`,
@@ -57,7 +68,7 @@ for (const [device, viewport] of Object.entries(sizes)) {
       });
 
       test("details", async ({ page }) => {
-        await page.goto("/parks/prospect-park");
+        await page.goto("/find-a-park/parks/prospect-park");
         await expect(
           page.getByRole("img", { name: /Prospect Park Boathouse/ }),
         ).toBeVisible();

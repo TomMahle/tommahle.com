@@ -16,11 +16,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Find a Park · New York City",
-    template: "%s · Find a Park",
+    default: "Tom Mahle",
+    template: "%s · Tom Mahle",
   },
-  description:
-    "Find a park in New York City: browse the list or the map, then see hours, amenities and directions.",
+  description: "Tom Mahle's portfolio: projects and the thinking behind them.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -38,15 +37,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to main content
         </a>
         <header className="border-b border-border bg-surface">
-          <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6">
+          <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3 sm:px-6">
             <Link
               href="/"
               className="flex items-center gap-2 rounded-md text-lg font-semibold tracking-tight"
             >
               <LeafIcon />
-              Find a Park
+              Tom Mahle
             </Link>
-            <span className="text-sm text-muted">New York City</span>
           </div>
         </header>
         <main
@@ -57,9 +55,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <footer className="border-t border-border bg-surface">
-          <p className="mx-auto max-w-7xl px-4 py-4 text-sm text-muted sm:px-6">
-            Park listings are sample data for demonstration and may not match
-            real parks. Always check with the park before you visit.
+          <p className="mx-auto max-w-3xl px-4 py-4 text-sm text-muted sm:px-6">
+            <a
+              href="https://github.com/TomMahle"
+              className="underline underline-offset-2 hover:text-foreground"
+            >
+              GitHub
+            </a>
           </p>
         </footer>
       </body>

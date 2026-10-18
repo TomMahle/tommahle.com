@@ -62,14 +62,22 @@ for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`${colorScheme} mode`, () => {
     test.use({ colorScheme });
 
-    test("home page (list)", async ({ page }) => {
+    test("portfolio home page", async ({ page }) => {
       await page.goto("/");
+      await expect(
+        page.getByRole("article", { name: "Find a Park" }),
+      ).toBeVisible();
+      await expectNoViolations(page);
+    });
+
+    test("home page (list)", async ({ page }) => {
+      await page.goto("/find-a-park");
       await expect(page.getByRole("list", { name: "Parks" })).toBeVisible();
       await expectNoViolations(page);
     });
 
     test("home page (map with an open popup)", async ({ page }, testInfo) => {
-      await page.goto("/");
+      await page.goto("/find-a-park");
       await openMapView(page, testInfo.project.name);
       await expect(page.locator(".park-marker")).toHaveCount(12);
       await tabTo(
@@ -85,14 +93,14 @@ for (const colorScheme of ["light", "dark"] as const) {
     });
 
     test("home page (search with no results)", async ({ page }) => {
-      await page.goto("/");
+      await page.goto("/find-a-park");
       await page.getByLabel("Search parks").fill("volcano");
       await expect(page.getByText(/No parks match/)).toBeVisible();
       await expectNoViolations(page);
     });
 
     test("details page with full data", async ({ page }) => {
-      await page.goto("/parks/prospect-park");
+      await page.goto("/find-a-park/parks/prospect-park");
       // Wait for the fallback photos (the listing's own photos never load).
       await expect(
         page.getByRole("img", { name: /Prospect Park Boathouse/ }),
@@ -101,12 +109,12 @@ for (const colorScheme of ["light", "dark"] as const) {
     });
 
     test("details page with missing data", async ({ page }) => {
-      await page.goto("/parks/cedar-hill-nature-preserve");
+      await page.goto("/find-a-park/parks/cedar-hill-nature-preserve");
       await expectNoViolations(page);
     });
 
     test("not found page", async ({ page }) => {
-      await page.goto("/parks/no-such-park");
+      await page.goto("/find-a-park/parks/no-such-park");
       await expectNoViolations(page);
     });
   });
@@ -117,9 +125,10 @@ test.describe("reflow at 320 CSS pixels (WCAG 1.4.10, ~400% zoom)", () => {
 
   for (const path of [
     "/",
-    "/parks/prospect-park",
-    "/parks/highland-dog-park",
-    "/parks/no-such-park",
+    "/find-a-park",
+    "/find-a-park/parks/prospect-park",
+    "/find-a-park/parks/highland-dog-park",
+    "/find-a-park/parks/no-such-park",
   ]) {
     test(`${path} has no horizontal scrolling`, async ({ page }) => {
       await page.goto(path);
@@ -137,7 +146,7 @@ test.describe("failure and selection states", () => {
     isMobile,
   }) => {
     await page.route(TILES_URL_PATTERN, (route) => route.abort());
-    await page.goto("/");
+    await page.goto("/find-a-park");
     await page
       .getByRole("button", { name: "Show on map: Prospect Park" })
       .click();
