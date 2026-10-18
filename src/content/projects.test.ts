@@ -12,7 +12,12 @@ describe("PROJECTS", () => {
     for (const project of PROJECTS) {
       expect(project.summary.length).toBeGreaterThan(20);
       expect(project.links.length).toBeGreaterThan(0);
-      for (const link of project.links) {
+      const inlineLinks = (project.highlights ?? []).flatMap((highlight) =>
+        typeof highlight === "string"
+          ? []
+          : highlight.filter((part) => typeof part !== "string"),
+      );
+      for (const link of [...project.links, ...inlineLinks]) {
         expect(link.label).not.toBe("");
         // A path on this site, or a full https URL.
         expect(link.href).toMatch(/^(\/[a-z0-9-]|https:\/\/)/);

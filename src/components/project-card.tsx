@@ -21,6 +21,29 @@ export function ProjectCard({ project }: { project: Project }) {
         )}
       </div>
       <p>{project.summary}</p>
+      {project.highlights && (
+        <ul className="flex list-disc flex-col gap-1.5 pl-5">
+          {project.highlights.map((highlight, index) => (
+            <li key={index}>
+              {typeof highlight === "string"
+                ? highlight
+                : highlight.map((part, partIndex) =>
+                    typeof part === "string" ? (
+                      part
+                    ) : (
+                      <a
+                        key={partIndex}
+                        href={part.href}
+                        className="font-medium text-accent underline underline-offset-2 hover:text-accent-hover"
+                      >
+                        {part.label}
+                      </a>
+                    ),
+                  )}
+            </li>
+          ))}
+        </ul>
+      )}
       <ul role="list" aria-label="Built with" className="flex flex-wrap gap-2">
         {project.tags.map((tag) => (
           <li

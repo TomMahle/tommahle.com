@@ -1,6 +1,11 @@
 /**
- * Regenerates the screenshots in docs/screenshots (used by the README).
- * Run with `pnpm screenshots`. Not part of the test suite.
+ * Regenerates the screenshots in docs/screenshots. Run with
+ * `pnpm screenshots`. Not part of the test suite.
+ *
+ * Keep this (and the committed screenshots) even though the README no longer
+ * shows them: they let AI coding agents, and reviewers, see every page in
+ * both color schemes on desktop and phone without running the site. That has
+ * caught real layout and contrast problems.
  */
 import type { Page } from "@playwright/test";
 import { expect, test } from "../e2e/fixtures";

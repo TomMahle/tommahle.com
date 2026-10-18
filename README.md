@@ -8,9 +8,8 @@ This repo started as a copy of
 submission, and keeps its history. It reuses that project's setup (Next.js,
 Tailwind, accessibility tests, CI) for the whole site.
 
-| Portfolio                                                            | Find a Park                                                         |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| ![Portfolio home page](docs/screenshots/desktop-light-portfolio.png) | ![Find a Park list and map](docs/screenshots/desktop-light-map.png) |
+It's live at **[tommahle.com](https://www.tommahle.com)**, with Find a Park at
+[tommahle.com/find-a-park](https://www.tommahle.com/find-a-park).
 
 ## Run it
 
@@ -32,8 +31,12 @@ not a static export, because unknown park URLs return a real 404.
 pnpm check                              # types, lint, formatting, unit tests
 pnpm exec playwright install chromium   # once, for the browser tests
 pnpm test:e2e                           # end-to-end + accessibility, desktop and phone
-pnpm screenshots                        # regenerates docs/screenshots
+pnpm screenshots                        # regenerates docs/screenshots (see below)
 ```
+
+The screenshots aren't shown in this README, but keep generating them: they
+let AI coding agents (and reviewers) see every page in both color schemes on
+desktop and phone without running the site.
 
 CI (`.github/workflows/ci.yml`) runs the checks and browser tests on every
 push and pull request.

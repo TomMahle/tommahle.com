@@ -40,6 +40,14 @@ test("the Git as a Data Store write-up opens from its card", async ({
   await expect(page).toHaveURL(/\/$/);
 });
 
+test("this website is listed with a link to its source", async ({ page }) => {
+  await page.goto("/");
+  const card = page.getByRole("article", { name: "This website" });
+  await expect(
+    card.getByRole("link", { name: "Source code (This website)" }),
+  ).toHaveAttribute("href", "https://github.com/TomMahle/tommahle.com");
+});
+
 test("the site header leads home from Find a Park", async ({ page }) => {
   await page.goto("/find-a-park/parks/prospect-park");
   await expect(page).toHaveTitle("Prospect Park · Find a Park");
