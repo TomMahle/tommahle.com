@@ -52,9 +52,11 @@ Since the copy, it lives here:
 
 - Routes: `src/app/find-a-park/` (paths built by `src/lib/parks/routes.ts`)
 - Code: `src/components/park-*`, `src/lib/parks/`, data in `assets/`
-- Map tiles: `public/tiles/nyc.pmtiles`, self-hosted vector tiles of the five
-  boroughs; `scripts/build-tiles.sh` rebuilds them (needs
-  `brew install pmtiles`)
+- Map tiles: self-hosted vector tiles in `public/tiles/`. `nyc.pmtiles`
+  (26 MB) has the five boroughs' street detail; `overview.pmtiles` (10 MB)
+  covers everywhere the map can be panned to at low zoom, so zoomed-out views
+  are never blank. `scripts/build-tiles.sh` rebuilds both (needs
+  `brew install pmtiles`).
 - Fallback photos: `public/photos/`, credited in
   `src/lib/parks/fallback-photos.ts`
 

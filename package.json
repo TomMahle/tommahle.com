@@ -21,6 +21,7 @@
     "clean": "rm -rf .next"
   },
   "dependencies": {
+    "@protomaps/basemaps": "5.7.2",
     "@react-leaflet/core": "3.0.0",
     "leaflet": "^1.9.4",
     "next": "16.4.0",

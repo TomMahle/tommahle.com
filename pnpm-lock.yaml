@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@protomaps/basemaps':
+        specifier: 5.7.2
+        version: 5.7.2
       '@react-leaflet/core':
         specifier: 3.0.0
         version: 3.0.0(leaflet@1.9.4)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
