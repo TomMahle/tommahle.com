@@ -125,6 +125,20 @@ for (const colorScheme of ["light", "dark"] as const) {
   });
 }
 
+test.describe("dark chosen with the theme button on a light device", () => {
+  test.use({ colorScheme: "light" });
+
+  test("portfolio home page", async ({ page }) => {
+    await page.goto("/");
+    await page
+      .getByRole("banner")
+      .getByRole("button", { name: "Dark mode" })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expectNoViolations(page);
+  });
+});
+
 test.describe("reflow at 320 CSS pixels (WCAG 1.4.10, ~400% zoom)", () => {
   test.use({ viewport: { width: 320, height: 640 } });
 

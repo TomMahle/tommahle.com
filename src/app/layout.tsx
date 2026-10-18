@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { RouteFocus } from "@/components/route-focus";
+import { THEME_SCRIPT, ThemeToggle } from "@/components/theme-toggle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,6 +23,12 @@ export const metadata: Metadata = {
   description: "Tom Mahle's portfolio: projects and the thinking behind them.",
 };
 
+/** Sections of the home page. Plain links, so browsers scroll and move focus. */
+const SECTION_LINKS = [
+  { label: "Experience", href: "/#experience" },
+  { label: "Projects", href: "/#projects" },
+];
+
 const FOOTER_LINKS = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/tommahle" },
   { label: "GitHub", href: "https://github.com/TomMahle" },
@@ -32,7 +39,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // Smooth scrolling for in-page links only; page changes stay instant.
+      data-scroll-behavior="smooth"
+      // THEME_SCRIPT may set data-theme before React loads.
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="flex min-h-full flex-col font-sans">
         <RouteFocus />
         <a
@@ -42,7 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to main content
         </a>
         <header className="border-b border-border bg-surface">
-          <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3 sm:px-6">
+          <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 sm:px-6">
             <Link
               href="/"
               className="flex items-center gap-2 rounded-md text-lg font-semibold tracking-tight"
@@ -50,6 +64,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <LeafIcon />
               Tom Mahle
             </Link>
+            <nav aria-label="Sections" className="ml-auto">
+              <ul role="list" className="flex items-center gap-1">
+                {SECTION_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="inline-flex min-h-11 items-center rounded-md px-2 font-medium text-muted hover:text-foreground sm:px-3"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <ThemeToggle />
           </div>
         </header>
         <main

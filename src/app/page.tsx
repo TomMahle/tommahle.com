@@ -40,7 +40,10 @@ export default function Home() {
       </section>
 
       <section aria-labelledby="experience" className="flex flex-col gap-4">
-        <h2 id="experience" className="text-2xl font-semibold tracking-tight">
+        <h2
+          id="experience"
+          className="scroll-mt-6 text-2xl font-semibold tracking-tight"
+        >
           Experience
         </h2>
         <ol role="list" className="flex flex-col gap-6">
@@ -65,7 +68,10 @@ export default function Home() {
       </section>
 
       <section aria-labelledby="projects" className="flex flex-col gap-4">
-        <h2 id="projects" className="text-2xl font-semibold tracking-tight">
+        <h2
+          id="projects"
+          className="scroll-mt-6 text-2xl font-semibold tracking-tight"
+        >
           Projects
         </h2>
         <ul role="list" className="flex flex-col gap-4">

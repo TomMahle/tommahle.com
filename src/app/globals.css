@@ -32,8 +32,13 @@
   color-scheme: light;
 }
 
+/*
+ * Dark colors apply when the device asks for dark and the visitor hasn't
+ * picked light, or when they've picked dark (the header's theme button sets
+ * data-theme on <html>; see ThemeToggle).
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --background: #0e1411;
     --surface: #151d19;
     --surface-muted: #1c2621;
@@ -49,6 +54,23 @@
     --marker-selected: #b4410f;
     color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --background: #0e1411;
+  --surface: #151d19;
+  --surface-muted: #1c2621;
+  --foreground: #e6ece8;
+  --muted: #a2b1a8;
+  --border: #2c3a33;
+  --accent: #6cc996;
+  --accent-hover: #8ad8ad;
+  --accent-soft: #19362a;
+  --on-accent: #0b1f15;
+  --focus: #93c5fd;
+  --marker: #1d6a46;
+  --marker-selected: #b4410f;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -68,6 +90,12 @@
 }
 
 @layer base {
+  /* In-page links (#experience, #projects) scroll smoothly; Next.js keeps
+     page-to-page navigation instant (data-scroll-behavior on <html>). */
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background: var(--background);
     color: var(--foreground);
