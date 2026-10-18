@@ -1,6 +1,12 @@
 import AxeBuilder from "@axe-core/playwright";
 import type { Page } from "@playwright/test";
-import { expect, openMapView, tabTo, test, TILE_URL_PATTERN } from "./fixtures";
+import {
+  expect,
+  openMapView,
+  tabTo,
+  test,
+  TILES_URL_PATTERN,
+} from "./fixtures";
 
 /**
  * Automated WCAG 2.2 AA checks. These catch a useful subset of problems
@@ -130,8 +136,7 @@ test.describe("failure and selection states", () => {
     page,
     isMobile,
   }) => {
-    await page.unroute(TILE_URL_PATTERN);
-    await page.route(TILE_URL_PATTERN, (route) => route.abort());
+    await page.route(TILES_URL_PATTERN, (route) => route.abort());
     await page.goto("/");
     await page
       .getByRole("button", { name: "Show on map: Prospect Park" })

@@ -5,35 +5,24 @@ import {
   type Page,
 } from "@playwright/test";
 
-// A 1x1 fully transparent PNG, served in place of real map tiles.
-const BLANK_TILE = Buffer.from(
+// A 1x1 fully transparent PNG, served in place of the listings' photos.
+const BLANK_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGNgAAIAAAUAAXpeqz8AAAAASUVORK5CYII=",
   "base64",
 );
 
-export const TILE_URL_PATTERN = "https://tile.openstreetmap.org/**";
+/** The app's own map tile archive (it is self-hosted, so never stubbed). */
+export const TILES_URL_PATTERN = "**/tiles/*.pmtiles";
 export const LISTED_PHOTO_URL_PATTERN = "https://images.example.com/**";
-const WIKIMEDIA_PHOTO_URL_PATTERN = "https://thumb.wikimedia.org/**";
 
 /**
- * Every test runs offline from third parties: map tiles and the Wikimedia
- * fallback photos are stubbed (neither should receive automated traffic, and
- * tests shouldn't depend on them), and the sample data's placeholder image
- * host is blocked, as it is unreachable in real life too.
- *
- * E2E_REAL_MEDIA=1 loads real tiles and photos instead; only
- * `pnpm screenshots` uses it.
+ * Every test runs offline from third parties: map tiles and fallback photos
+ * are served by the app itself, and the sample data's placeholder image host
+ * is blocked, as it is unreachable in real life too.
  */
 export const test = base.extend<{ stubExternalRequests: void }>({
   stubExternalRequests: [
     async ({ page }, use) => {
-      if (!process.env.E2E_REAL_MEDIA) {
-        for (const pattern of [TILE_URL_PATTERN, WIKIMEDIA_PHOTO_URL_PATTERN]) {
-          await page.route(pattern, (route) =>
-            route.fulfill({ contentType: "image/png", body: BLANK_TILE }),
-          );
-        }
-      }
       await page.route(LISTED_PHOTO_URL_PATTERN, (route) => route.abort());
       await use();
     },
@@ -47,7 +36,7 @@ export { expect };
 export async function serveListedPhotos(page: Page) {
   await page.unroute(LISTED_PHOTO_URL_PATTERN);
   await page.route(LISTED_PHOTO_URL_PATTERN, (route) =>
-    route.fulfill({ contentType: "image/png", body: BLANK_TILE }),
+    route.fulfill({ contentType: "image/png", body: BLANK_PNG }),
   );
 }
 

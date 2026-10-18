@@ -1,6 +1,7 @@
 import type { Park } from "./types";
 
 export type FallbackPhoto = {
+  /** A copy in public/photos (960px wide, as Wikimedia Commons scales it). */
   src: string;
   /** Describes what's in this specific photo. */
   alt: string;
@@ -23,8 +24,9 @@ export type FallbackPhoto = {
  * the wrong park. Most parks in the sample data are fictional (no matching
  * real park), so they intentionally have no entry.
  *
- * Photos are linked from Wikimedia Commons, which permits hotlinking. Each
- * one's license requires the credit shown under it.
+ * Photos are copied from Wikimedia Commons into public/photos rather than
+ * linked, so visitors' browsers don't load them from Wikimedia's servers.
+ * Each one's license requires the credit shown under it.
  */
 const FALLBACK_PHOTOS = new Map<
   string,
@@ -36,7 +38,7 @@ const FALLBACK_PHOTOS = new Map<
       parkName: "Prospect Park",
       photos: [
         {
-          src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Prospect_park_boathouse%2C_May_2019.jpg/960px-Prospect_park_boathouse%2C_May_2019.jpg",
+          src: "/photos/prospect-park-boathouse.jpg",
           alt: "The Prospect Park Boathouse, a white two-story building with arched windows, reflected in the lake on a sunny spring day",
           credit: {
             author: "Antigng",
@@ -47,7 +49,7 @@ const FALLBACK_PHOTOS = new Map<
           },
         },
         {
-          src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Fall_reflections_in_Prospect_Park_Lake.jpg/960px-Fall_reflections_in_Prospect_Park_Lake.jpg",
+          src: "/photos/prospect-park-lake-autumn.jpg",
           alt: "Autumn trees in orange and green reflected in Prospect Park Lake under a cloudy sky",
           credit: {
             author: "Thomas Gosnell",

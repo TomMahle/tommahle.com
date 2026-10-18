@@ -6,7 +6,7 @@ import {
   parkCard,
   tabTo,
   test,
-  TILE_URL_PATTERN,
+  TILES_URL_PATTERN,
 } from "./fixtures";
 
 test.describe("home page", () => {
@@ -201,8 +201,7 @@ test.describe("when the map can't load", () => {
   test("map tiles failing shows a notice and the list keeps working", async ({
     page,
   }, testInfo) => {
-    await page.unroute(TILE_URL_PATTERN);
-    await page.route(TILE_URL_PATTERN, (route) => route.abort());
+    await page.route(TILES_URL_PATTERN, (route) => route.abort());
     await page.goto("/");
     await openMapView(page, testInfo.project.name);
 

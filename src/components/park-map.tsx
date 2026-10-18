@@ -4,12 +4,13 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { Marker, Popup, useMap } from "react-leaflet";
 import { amenityLabel } from "@/lib/parks/amenities";
 import type { ParkWithCoordinates } from "@/lib/parks/types";
-import { TILE_ATTRIBUTION, TILE_URL } from "./map-config";
+import { MAX_BOUNDS, MIN_ZOOM, TILE_ATTRIBUTION } from "./map-config";
 import { markerIcon } from "./map-marker";
 import { StableMapContainer } from "./stable-map-container";
+import { VectorTileLayer } from "./vector-tile-layer";
 
 /** Zoom used when jumping to a single park from the list. */
 const PARK_ZOOM = 15;
@@ -49,7 +50,6 @@ export default function ParkMap({
   instructionsId,
 }: ParkMapProps) {
   const [tilesFailed, setTilesFailed] = useState(false);
-  const anyTileLoaded = useRef(false);
   const reducedMotion = usePrefersReducedMotion();
   // Set while ShowOnMap closes a popup itself, so focus isn't pulled back to
   // whatever opened that popup.
@@ -65,6 +65,10 @@ export default function ParkMap({
         boundsOptions={{ padding: [40, 40], maxZoom: PARK_ZOOM }}
         options={{
           maxZoom: 18,
+          minZoom: MIN_ZOOM,
+          // There is no map beyond the tile archive's area.
+          maxBounds: MAX_BOUNDS,
+          maxBoundsViscosity: 1,
           zoomAnimation: !reducedMotion,
           fadeAnimation: !reducedMotion,
           markerZoomAnimation: !reducedMotion,
@@ -74,19 +78,9 @@ export default function ParkMap({
         }}
         className="h-full w-full"
       >
-        <TileLayer
-          url={TILE_URL}
+        <VectorTileLayer
           attribution={TILE_ATTRIBUTION}
-          eventHandlers={{
-            tileload: () => {
-              anyTileLoaded.current = true;
-              setTilesFailed(false);
-            },
-            tileerror: () => {
-              // Only warn when nothing has loaded at all, not for one bad tile.
-              if (!anyTileLoaded.current) setTilesFailed(true);
-            },
-          }}
+          onError={() => setTilesFailed(true)}
         />
         <InvalidateSizeOnResize />
         <MapKeyboardSupport instructionsId={instructionsId} />

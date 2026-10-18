@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { fallbackPhotosFor } from "./fallback-photos";
 
@@ -9,7 +11,9 @@ describe("fallbackPhotosFor", () => {
     });
     expect(photos.length).toBeGreaterThan(0);
     for (const photo of photos) {
-      expect(photo.src).toMatch(/^https:\/\//);
+      // Self-hosted: the file must be in public/.
+      expect(photo.src).toMatch(/^\/photos\//);
+      expect(existsSync(join("public", photo.src))).toBe(true);
       expect(photo.alt.length).toBeGreaterThan(20);
       expect(photo.credit.author).not.toBe("");
       expect(photo.credit.licenseUrl).toMatch(/creativecommons\.org/);

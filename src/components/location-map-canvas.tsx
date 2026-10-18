@@ -1,11 +1,11 @@
 "use client";
 
 import "leaflet/dist/leaflet.css";
-import { Marker, TileLayer } from "react-leaflet";
+import { Marker } from "react-leaflet";
 import type { Coordinates } from "@/lib/parks/types";
-import { TILE_URL } from "./map-config";
 import { markerIcon } from "./map-marker";
 import { StableMapContainer } from "./stable-map-container";
+import { VectorTileLayer } from "./vector-tile-layer";
 
 const PREVIEW_ZOOM = 15;
 const icon = markerIcon(false);
@@ -38,7 +38,7 @@ export default function LocationMapCanvas({
       }}
       className="h-full w-full"
     >
-      <TileLayer url={TILE_URL} />
+      <VectorTileLayer />
       <Marker
         position={point}
         icon={icon}

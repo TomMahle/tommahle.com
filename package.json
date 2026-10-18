@@ -17,13 +17,15 @@
     "test:e2e": "playwright test",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:run",
     "prepare": "husky",
-    "screenshots": "E2E_REAL_MEDIA=1 playwright test --config playwright.screenshots.config.ts",
+    "screenshots": "playwright test --config playwright.screenshots.config.ts",
     "clean": "rm -rf .next"
   },
   "dependencies": {
     "@react-leaflet/core": "3.0.0",
     "leaflet": "^1.9.4",
     "next": "16.4.0",
+    "pmtiles": "3.2.1",
+    "protomaps-leaflet": "5.1.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-leaflet": "^5.0.0",

@@ -163,13 +163,14 @@ test(
   async ({ page }) => {
     await page.goto("/");
     await expect(page.locator(".park-marker")).toHaveCount(12);
+    // Map tiles are canvases that protomaps-leaflet keys as "x:y:zoom".
     const zoom = () =>
       page
         .locator(".leaflet-tile")
         .first()
-        .getAttribute("src")
-        .then((src) => src?.split("/").at(-3));
+        .evaluate((tile) => (tile as { key?: string }).key?.split(":").at(-1));
     const zoomBefore = await zoom();
+    expect(zoomBefore).toMatch(/^\d+$/);
 
     // Click the card itself (its address), not its links or buttons.
     await page

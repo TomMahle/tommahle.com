@@ -214,6 +214,9 @@
 
 .park-map .leaflet-container .leaflet-control-attribution {
   font-size: 0.75rem;
+  /* Opaque, so its contrast doesn't depend on the map behind it (Leaflet's
+     own background is 80% white). */
+  background: #fff;
 }
 
 /* Links inside the attribution are told apart from its text by more than

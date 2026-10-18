@@ -41,9 +41,12 @@ Production: `pnpm build && pnpm start`. The app needs a Node server (`next
 start` or a Node host); it isn't a static export, because unknown park URLs
 are rendered on request to return a real 404.
 
-Optional, read at **build** time: `NEXT_PUBLIC_MAP_TILE_URL` and
-`NEXT_PUBLIC_MAP_TILE_ATTRIBUTION` point the map at another tile provider. If
-you set a custom URL, set its attribution too (it defaults to empty).
+The map's tiles are a file in the repo (`public/tiles/nyc.pmtiles`, see
+[Important decisions](#important-decisions)), so there's no tile provider to
+set up. Optional, read at **build** time: `NEXT_PUBLIC_MAP_PMTILES_URL` serves
+that file from elsewhere, such as object storage; the host must support HTTP
+range requests. `scripts/build-tiles.sh` regenerates it from the latest
+OpenStreetMap data (it needs the `pmtiles` CLI: `brew install pmtiles`).
 
 If CSS changes don't show up (in `pnpm dev` or a local build), Turbopack's
 on-disk cache is serving a stale stylesheet; `pnpm clean` clears it. CI
@@ -66,8 +69,8 @@ it); locally it reuses a server already running on that port. CI
 - **List** of all parks, alphabetical, with address, rating, hours, size and
   the first few amenities ("+3 more" expands the rest in place). Each park
   name links to its details page.
-- **Map** (Leaflet + OpenStreetMap tiles) with a marker per park. Selecting a
-  marker opens a summary with a link to the park's details, and highlights
+- **Map** (Leaflet, with self-hosted OpenStreetMap vector tiles) with a
+  marker per park. Selecting a marker opens a summary with a link to the park's details, and highlights
   the park in the list. "Show on map" on a list card does the reverse, and
   on wide screens clicking a card centers its park on the map (keeping your
   zoom).
@@ -113,14 +116,21 @@ Works without the resident's location; the app never asks for it.
   `create-next-app` template rather than a third-party boilerplate. The home
   page and every park page are prerendered at build time from the JSON file;
   only unknown park URLs are rendered on request (to return a real 404).
-- **Leaflet with OpenStreetMap tiles.** No API key for the interviewer to
+- **Leaflet, with OpenStreetMap tiles.** No API key for the interviewer to
   supply, a small bundle, and markers that are keyboard-focusable out of the
-  box. The trade-off: OSM's public tile servers don't allow production
-  traffic, so the tile URL is configurable (`NEXT_PUBLIC_MAP_TILE_URL`,
-  `NEXT_PUBLIC_MAP_TILE_ATTRIBUTION`) and must point at a tile provider
-  before public use. I compared MapLibre + OpenFreeMap (prettier vector map,
-  but ~5x the code and no built-in marker accessibility), Mapbox and Google
-  (both need keys and billing).
+  box. I compared MapLibre + OpenFreeMap (prettier vector map, but ~5x the
+  code and no built-in marker accessibility), Mapbox and Google (both need
+  keys and billing).
+- **Self-hosted vector tiles** (changed after submission; the submitted
+  version used OSM's public tile servers, which don't allow production
+  traffic). `public/tiles/nyc.pmtiles` is a 29 MB
+  [PMTiles](https://docs.protomaps.com/pmtiles/) archive of the five
+  boroughs, cut from [Protomaps](https://protomaps.com)' OpenStreetMap
+  builds and drawn in the browser by `protomaps-leaflet`, so markers,
+  popups and keyboard support are unchanged. The browser fetches only the
+  parts it needs, with HTTP range requests. The archive stops at zoom 14
+  (zoom 15 would triple its size); closer zooms are drawn from it and stay
+  sharp. The map can't be zoomed out past the city or panned far beyond it.
 - **The list and details pages are the primary interface; the map is an
   enhancement.** Everything a marker does can also be done from the list,
   which is what makes the map optional for keyboard, screen reader and
@@ -178,8 +188,10 @@ an external API: it is never changed. A park's listed photos always win; the
 fallback is used only if the listing has no photos or every listed photo
 fails to load. An entry only applies when both the park's id and name
 match, so a reused id can't show the wrong park. Photos are CC BY-SA 4.0
-from Wikimedia Commons, linked rather than copied, with the required credit
-under each.
+from Wikimedia Commons, with the required credit under each. They're copied
+into `public/photos/` (Commons' 960px versions) rather than linked, so
+visitors don't load them from Wikimedia's servers (changed after
+submission).
 
 Broken photo links are never hidden: a listed photo that fails to load shows
 as "Photo unavailable" (or, when a fallback is used, the note says the
@@ -230,8 +242,9 @@ Target: WCAG 2.2 AA.
   keyboard-only flows (list → details, markers with Enter/Space/Escape,
   skip link, focus after navigation), search, the 404
   page, missing data on the real sample parks, map tiles failing, the map
-  code failing, and regression tests for each bug below. External requests
-  are stubbed, so tests send no traffic to OpenStreetMap.
+  code failing, and regression tests for each bug below. Map tiles come from
+  the app itself and external photos are stubbed, so tests send no
+  third-party traffic.
 - axe-core WCAG 2.2 AA scans of 7 page states (list, open popup, no search
   results, full and sparse details, 404, and a selected park with the
   map-tiles-failed notice), in light and dark mode, plus reflow checks at
@@ -239,8 +252,7 @@ Target: WCAG 2.2 AA.
 
 **Manual**: I used the app in a browser at phone and desktop sizes, in both
 color schemes, with mouse and keyboard only, and reviewed screenshots of each
-screen (`pnpm screenshots` regenerates them; unlike the tests, it loads
-real map tiles and photos, so run it by hand, occasionally).
+screen (`pnpm screenshots` regenerates them).
 
 **Independent review**: two separate AI review passes, each without any
 context from the build, audited the code: one for accessibility (WCAG 2.2
@@ -324,8 +336,10 @@ What I'd do differently in a production app:
   primary keyboard path, so I didn't fight Leaflet's DOM order.
 - Only tested in Chromium (at desktop and phone sizes). Screen reader output
   was checked through the accessibility tree, not with VoiceOver or NVDA.
-- The OSM tile servers' usage policy rules them out for production (see
-  [Important decisions](#important-decisions)).
+- The map only covers the five boroughs, and its data is as current as the
+  last `scripts/build-tiles.sh` run.
+- The map background is always light, including in dark mode (Protomaps
+  also has a dark style; untested here).
 - The Geist font is fetched from Google Fonts at build time, so
   `pnpm build` needs internet access.
 - If Next.js discards the hidden home page after many navigations, the Leaflet
@@ -342,25 +356,22 @@ Agent time closer to 3 hours as I let it run unattended a couple of times.
 
 ## Next steps before public use
 
-1. **Switch map tiles to a production tile provider** (and add its
-   attribution); OSM's public servers forbid production use. Likewise,
-   self-host the fallback photos rather than linking to Wikimedia.
-2. **Real data source and ownership**: an API or CMS the parks department
+1. **Real data source and ownership**: an API or CMS the parks department
    maintains, validation at import time (the normalizer's warnings are a
    start), real photos with proper alt text, and a stated rating source.
-3. **Usability testing with residents**, including screen reader users
+2. **Usability testing with residents**, including screen reader users
    (VoiceOver, NVDA) and people on low-end phones — automated checks don't
    replace this.
-4. **Hosting and operations**: deploy to a Node host (or Vercel) behind a
+3. **Hosting and operations**: deploy to a Node host (or Vercel) behind a
    CDN, error monitoring (the error boundaries already log), uptime checks,
    and a privacy-friendly analytics decision.
-5. **Content and language**: plain-language review, translations for the
+4. **Content and language**: plain-language review, translations for the
    city's main languages, and "Open now" once hours are structured.
-6. **Security**: headers (a CSP allowing only the tile and image hosts) and a
+5. **Security**: headers (a CSP allowing only the listings' image hosts) and a
    security review; an AI-assisted pass is cheap enough to always run.
-7. **Review by real stakeholders** before launch, alongside the resident
+6. **Review by real stakeholders** before launch, alongside the resident
    testing above.
-8. **Knowledge transfer**: if this is handed to a client's engineers or
+7. **Knowledge transfer**: if this is handed to a client's engineers or
    another team, walk the maintainers through it and answer their questions.
 
 ## Project layout
@@ -382,7 +393,11 @@ src/components/park-photos.tsx  listed photos, placeholders, and the fallback-ph
 src/components/park-location-map.tsx  still location preview on the details page
 src/components/route-focus.tsx  focus management after navigation
 src/app/not-found.tsx, error.tsx, global-error.tsx  404 and error pages
+src/components/vector-tile-layer.tsx    the map background, from the tile archive
+public/tiles/nyc.pmtiles        self-hosted map tiles for the five boroughs
+public/photos/                  self-hosted fallback photos (credited in fallback-photos.ts)
 e2e/                            Playwright tests (incl. accessibility, regressions)
+scripts/build-tiles.sh          regenerates public/tiles/nyc.pmtiles
 scripts/screenshots.spec.ts     regenerates docs/screenshots
 docs/brief.md                   the take-home brief (verbatim, as Markdown)
 docs/overnight-notes.md         Claude Code's handoff notes from the overnight build
