@@ -113,8 +113,8 @@ export default function GitAsADataStore() {
           </li>
         </ul>
         <p>
-          That’s why the public demo is read-only: it shows the blog and
-          explains the trick, with posting switched off.
+          The demo keeps its admin page so you can try it, with large warnings
+          about these risks right above the form.
         </p>
       </section>
 
