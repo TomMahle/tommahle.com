@@ -70,6 +70,11 @@ for (const colorScheme of ["light", "dark"] as const) {
       await expectNoViolations(page);
     });
 
+    test("Git as a Data Store write-up", async ({ page }) => {
+      await page.goto("/talks/git-as-a-data-store");
+      await expectNoViolations(page);
+    });
+
     test("home page (list)", async ({ page }) => {
       await page.goto("/find-a-park");
       await expect(page.getByRole("list", { name: "Parks" })).toBeVisible();
@@ -125,6 +130,7 @@ test.describe("reflow at 320 CSS pixels (WCAG 1.4.10, ~400% zoom)", () => {
 
   for (const path of [
     "/",
+    "/talks/git-as-a-data-store",
     "/find-a-park",
     "/find-a-park/parks/prospect-park",
     "/find-a-park/parks/highland-dog-park",

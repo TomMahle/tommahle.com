@@ -10,9 +10,16 @@ export function ProjectCard({ project }: { project: Project }) {
       aria-labelledby={headingId}
       className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-5"
     >
-      <h3 id={headingId} className="text-xl font-semibold tracking-tight">
-        {project.title}
-      </h3>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <h3 id={headingId} className="text-xl font-semibold tracking-tight">
+          {project.title}
+        </h3>
+        {project.badge && (
+          <span className="rounded-[var(--radius-fully-round)] border border-border px-2.5 py-0.5 text-sm text-muted">
+            {project.badge}
+          </span>
+        )}
+      </div>
       <p>{project.summary}</p>
       <ul role="list" aria-label="Built with" className="flex flex-wrap gap-2">
         {project.tags.map((tag) => (
