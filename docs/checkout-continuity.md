@@ -144,6 +144,11 @@ anywhere:
 - **App:** `tommahle://checkout/<id>` (the `tommahle` scheme is registered in
   `apps/mobile/app.json`; expo-router maps it to `src/app/checkout/[id].tsx`).
   The page also shows a QR code and copy button for it.
+- **Expo Go (development):** Expo Go doesn't register the `tommahle` scheme,
+  so that link only works in a development or store build. In Expo Go the same
+  route is `exp://<metro host>:<port>/--/checkout/<id>`. Start the web app with
+  `CHECKOUT_EXPO_GO_ORIGIN=exp://<your LAN IP>:8081` (the address Metro prints)
+  and the page adds a third QR code for it.
 
 Both surfaces use one API and one client (`createCheckoutClient`), so they
 parse and interpret responses identically. There is no per-device cart and no

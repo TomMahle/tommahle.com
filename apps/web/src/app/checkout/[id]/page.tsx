@@ -45,6 +45,21 @@ export default async function CheckoutSession({
     `${requestHeaders.get("x-forwarded-proto") ?? "http"}://${requestHeaders.get("host")}`;
   const webUrl = `${origin}/checkout/${id}`;
   const deepLink = `${APP_SCHEME}://checkout/${id}`;
+  // Expo Go doesn't register the app's scheme; it opens routes as
+  // exp://<metro host>/--/<path>. Shown only when a dev sets the Metro origin.
+  const expoGoOrigin = process.env.CHECKOUT_EXPO_GO_ORIGIN;
+  const links = [
+    { label: "Open on the web", url: webUrl },
+    { label: "Open in the app", url: deepLink },
+    ...(expoGoOrigin
+      ? [
+          {
+            label: "Open in Expo Go (dev)",
+            url: `${expoGoOrigin.replace(/\/$/, "")}/--/checkout/${id}`,
+          },
+        ]
+      : []),
+  ];
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10 sm:px-6">
@@ -69,10 +84,7 @@ export default async function CheckoutSession({
           The same checkout, same timer. Scan with your phone or copy the link.
         </p>
         <div className="mt-4 flex flex-wrap gap-6">
-          {[
-            { label: "Open on the web", url: webUrl },
-            { label: "Open in the app", url: deepLink },
-          ].map(({ label, url }) => (
+          {links.map(({ label, url }) => (
             <figure key={label} className="flex w-44 flex-col gap-2">
               <div
                 role="img"

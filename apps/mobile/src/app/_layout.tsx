@@ -6,7 +6,10 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack />
+      <Stack>
+        {/* Without a title the back button on pushed screens reads "index". */}
+        <Stack.Screen name="index" options={{ title: "Home" }} />
+      </Stack>
     </ThemeProvider>
   );
 }

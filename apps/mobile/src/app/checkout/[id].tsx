@@ -86,7 +86,12 @@ export default function CheckoutScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    // "automatic" insets the content below the translucent iOS header, so the
+    // status banner isn't drawn underneath it.
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={styles.container}
+    >
       <Stack.Screen options={{ title: "Checkout" }} />
 
       <StatusBanner snapshot={snapshot} />
