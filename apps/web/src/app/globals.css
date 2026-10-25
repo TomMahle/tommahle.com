@@ -26,6 +26,10 @@
   --accent-hover: #155537;
   --accent-soft: #e2f0e7;
   --on-accent: #ffffff;
+  --warn: #b45309;
+  --warn-soft: #fef3c7;
+  --danger: #b91c1c;
+  --danger-soft: #fee2e2;
   --focus: #1d4ed8;
   --marker: #1d6a46;
   --marker-selected: #b4410f;
@@ -49,6 +53,10 @@
     --accent-hover: #8ad8ad;
     --accent-soft: #19362a;
     --on-accent: #0b1f15;
+    --warn: #fbbf24;
+    --warn-soft: #3a2e0b;
+    --danger: #f87171;
+    --danger-soft: #3b1414;
     --focus: #93c5fd;
     --marker: #1d6a46;
     --marker-selected: #b4410f;
@@ -67,6 +75,10 @@
   --accent-hover: #8ad8ad;
   --accent-soft: #19362a;
   --on-accent: #0b1f15;
+  --warn: #fbbf24;
+  --warn-soft: #3a2e0b;
+  --danger: #f87171;
+  --danger-soft: #3b1414;
   --focus: #93c5fd;
   --marker: #1d6a46;
   --marker-selected: #b4410f;
@@ -85,6 +97,10 @@
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
   --color-focus: var(--focus);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
