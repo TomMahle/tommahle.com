@@ -1,4 +1,7 @@
 .next
+.expo
+.turbo
+dist
 out
 build
 coverage
@@ -6,4 +9,7 @@ playwright-report
 test-results
 pnpm-lock.yaml
 next-env.d.ts
-assets/parks.sample.json
+expo-env.d.ts
+apps/web/assets/parks.sample.json
+apps/mobile/ios
+apps/mobile/android

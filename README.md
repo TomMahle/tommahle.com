@@ -11,6 +11,17 @@ Tailwind, accessibility tests, CI) for the whole site.
 It's live at **[tommahle.com](https://www.tommahle.com)**, with Find a Park at
 [tommahle.com/find-a-park](https://www.tommahle.com/find-a-park).
 
+It's a pnpm + [Turborepo](https://turborepo.com) monorepo:
+
+```
+apps/web            the Next.js site (tommahle.com)
+apps/mobile         an Expo app (checkout handoff between web and mobile)
+packages/checkout   cart schema and helpers shared by both apps
+```
+
+Shared packages ship TypeScript source with no build step: Next compiles them
+via `transpilePackages`, and Metro compiles workspace packages by default.
+
 ## Run it
 
 Requirements: **Node 24** (pinned in `.nvmrc` and `.tool-versions`) and
@@ -19,19 +30,21 @@ from Google Fonts during `dev` and `build`, so those need internet access.
 
 ```bash
 pnpm install                            # also installs a git pre-commit hook (Prettier)
-pnpm dev                                # http://localhost:3000
+pnpm dev                                # web, http://localhost:3000
+pnpm dev:mobile                         # Expo dev server (press i / a / w)
 ```
 
-Production: `pnpm build && pnpm start`. It needs a Node host (Vercel works),
+Production: `pnpm build`, then `pnpm --filter @tommahle/web start`. The site
+needs a Node host (Vercel works, with its Root Directory set to `apps/web`),
 not a static export, because unknown park URLs return a real 404.
 
 ### Checks
 
 ```bash
-pnpm check                              # types, lint, formatting, unit tests
-pnpm exec playwright install chromium   # once, for the browser tests
+pnpm check                              # types, lint, unit tests (every package), formatting
+pnpm --filter @tommahle/web exec playwright install chromium   # once
 pnpm test:e2e                           # end-to-end + accessibility, desktop and phone
-pnpm screenshots                        # regenerates docs/screenshots (see below)
+pnpm screenshots                        # regenerates apps/web/docs/screenshots
 ```
 
 The screenshots aren't shown in this README, but keep generating them: they
@@ -43,7 +56,7 @@ push and pull request.
 
 ## Adding a project
 
-Add an entry to `src/content/projects.ts`. Its first link is the main
+Add an entry to `apps/web/src/content/projects.ts`. Its first link is the main
 button; links can be paths on this site or full `https://` URLs.
 
 ## Find a Park
@@ -51,7 +64,7 @@ button; links can be paths on this site or full `https://` URLs.
 An accessible park finder for New York City, at `/find-a-park`. Its full
 write-up (decisions, data handling, accessibility, the AI conversation logs)
 is in the [find-a-park README](https://github.com/TomMahle/find-a-park#readme).
-Since the copy, it lives here:
+Since the copy, it lives here (paths relative to `apps/web/`):
 
 - Routes: `src/app/find-a-park/` (paths built by `src/lib/parks/routes.ts`)
 - Code: `src/components/park-*`, `src/lib/parks/`, data in `assets/`
@@ -63,7 +76,9 @@ Since the copy, it lives here:
 - Fallback photos: `public/photos/`, credited in
   `src/lib/parks/fallback-photos.ts`
 
-## Project layout
+## Web app layout
+
+Paths relative to `apps/web/`:
 
 ```
 src/app/page.tsx                portfolio home page

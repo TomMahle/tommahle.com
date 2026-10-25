@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
     ];
   },
   partialPrefetching: true,
+  // Workspace packages ship TypeScript source.
+  transpilePackages: ["@tommahle/checkout"],
   turbopack: {
     rules: {
       "*.css": {
