@@ -15,8 +15,8 @@ It's a pnpm + [Turborepo](https://turborepo.com) monorepo:
 
 ```
 apps/web            the Next.js site (tommahle.com)
-apps/mobile         an Expo app (checkout handoff between web and mobile)
-packages/checkout   cart schema and helpers shared by both apps
+apps/mobile         an Expo app (resumes a checkout started on the web)
+packages/checkout   checkout session state machine, schemas and client shared by both apps
 ```
 
 Shared packages ship TypeScript source with no build step: Next compiles them
@@ -53,6 +53,15 @@ desktop and phone without running the site.
 
 CI (`.github/workflows/ci.yml`) runs the checks and browser tests on every
 push and pull request.
+
+## Checkout continuity
+
+A take-home prototype: start a ticket checkout on one device and finish it on
+another (web, phone browser or the Expo app) without duplicate orders, held
+stock that never frees, or a hidden price increase. Try it at `/checkout`.
+The write-up (state model, how surfaces resume, hold/price/duplicate handling,
+tradeoffs, run commands) is in
+[docs/checkout-continuity.md](docs/checkout-continuity.md).
 
 ## Adding a project
 
