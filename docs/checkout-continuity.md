@@ -44,6 +44,9 @@ EXPO_PUBLIC_API_URL=http://192.168.1.20:3000 pnpm dev:mobile
 # Android emulator: EXPO_PUBLIC_API_URL=http://10.0.2.2:3000
 # Also set CHECKOUT_PUBLIC_ORIGIN=http://192.168.1.20:3000 for the web server so
 # the "Open on the web" QR code points at the LAN, not at localhost.
+# In Expo Go, scan the checkout page's first QR code ("Scan with Expo Go").
+# In development it points at exp://<the page's hostname>:8081, so open the web
+# page via the LAN IP for a phone, or localhost for the iOS Simulator.
 
 # Tests
 pnpm --filter @tommahle/checkout test:run        # 43 unit tests
@@ -66,7 +69,10 @@ A demo, with two browser windows (one narrowed to a phone width) or a phone:
 
 Environment knobs (all optional): `CHECKOUT_HOLD_TTL_MS` (10000),
 `CHECKOUT_COMPLETING_TIMEOUT_MS` (15000), `CHECKOUT_SLOW_PAYMENT_MS` (3000),
-`CHECKOUT_PUBLIC_ORIGIN` (the origin used in the QR code).
+`CHECKOUT_PUBLIC_ORIGIN` (the origin used in the QR code),
+`CHECKOUT_EXPO_GO_ORIGIN` (the Metro address for the Expo Go link; defaults to
+`exp://<page hostname>:8081` outside production, and is hidden in production
+unless set).
 
 ## The session state model
 
@@ -146,9 +152,13 @@ anywhere:
   The page also shows a QR code and copy button for it.
 - **Expo Go (development):** Expo Go doesn't register the `tommahle` scheme,
   so that link only works in a development or store build. In Expo Go the same
-  route is `exp://<metro host>:<port>/--/checkout/<id>`. Start the web app with
-  `CHECKOUT_EXPO_GO_ORIGIN=exp://<your LAN IP>:8081` (the address Metro prints)
-  and the page adds a third QR code for it.
+  route is `exp://<metro host>:<port>/--/checkout/<id>`. Outside production
+  the page shows this link first, assuming Metro runs on the same machine as
+  the web server on its default port 8081 and is reached at the same hostname
+  as the page. Set `CHECKOUT_EXPO_GO_ORIGIN` (the address Metro prints) when
+  that assumption doesn't hold. Known issue: if Expo Go isn't already running,
+  the link opens the app on Home; opening it a second time reaches the
+  checkout.
 
 Both surfaces use one API and one client (`createCheckoutClient`), so they
 parse and interpret responses identically. There is no per-device cart and no
@@ -355,11 +365,17 @@ test levers.
   token in the QR code), so a leaked URL isn't a shared cart.
 - Hold extension _policy_ (e.g. one extension when payment starts) decided
   with data from the funnel above, instead of none.
-- Push the handoff: "continue on your phone" by notification, and universal
-  links so the QR opens the app when installed and the web page otherwise.
+- Universal links (iOS) and App Links (Android): one
+  `https://<host>/checkout/<id>` URL that opens the app when it's installed and
+  the web page otherwise, so a single QR code serves both surfaces and the
+  custom scheme and Expo Go links go away. Needs the
+  `apple-app-site-association` and `assetlinks.json` files served by the web
+  app and a signed build with associated domains.
+- Push the handoff: "continue on your phone" by notification.
 - Multi-item carts, per-item quantity limits, and partial-availability
   handling when one item's price or stock changes.
 - Real analytics sink with the per-user A/B assignment, and a dashboard for
   cross-device conversion.
-- Mobile: SSE (or a push channel), and component/E2E tests (Maestro/Detox);
-  I only verified the app type-checks and bundles, not on a simulator.
+- Mobile: SSE (or a push channel), and component/E2E tests (Maestro/Detox).
+  The app was checked by hand in Expo Go on the iOS Simulator (resume, price
+  change, slow payment, expiry), not on a device or in a standalone build.

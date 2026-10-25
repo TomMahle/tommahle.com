@@ -46,19 +46,26 @@ export default async function CheckoutSession({
   const webUrl = `${origin}/checkout/${id}`;
   const deepLink = `${APP_SCHEME}://checkout/${id}`;
   // Expo Go doesn't register the app's scheme; it opens routes as
-  // exp://<metro host>/--/<path>. Shown only when a dev sets the Metro origin.
-  const expoGoOrigin = process.env.CHECKOUT_EXPO_GO_ORIGIN;
+  // exp://<metro host>/--/<path>. In development, assume Metro runs on this
+  // machine on its default port, reached at the same hostname as this page
+  // (so a page opened via the LAN IP yields a link a phone can use).
+  const expoGoOrigin =
+    process.env.CHECKOUT_EXPO_GO_ORIGIN ??
+    (process.env.NODE_ENV === "production"
+      ? undefined
+      : `exp://${new URL(origin).hostname}:8081`);
   const links = [
-    { label: "Open on the web", url: webUrl },
-    { label: "Open in the app", url: deepLink },
+    // First, so nobody scans the app link from Expo Go, where it does nothing.
     ...(expoGoOrigin
       ? [
           {
-            label: "Open in Expo Go (dev)",
+            label: "Scan with Expo Go (dev)",
             url: `${expoGoOrigin.replace(/\/$/, "")}/--/checkout/${id}`,
           },
         ]
       : []),
+    { label: "Open in the app (installed build)", url: deepLink },
+    { label: "Open on the web", url: webUrl },
   ];
 
   return (
