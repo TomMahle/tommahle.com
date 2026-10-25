@@ -34,6 +34,9 @@ export default defineConfig({
     // Tests run against a production build, which is what residents get.
     command: `pnpm build && pnpm start --port ${PORT}`,
     url: baseURL,
+    // Checkout holds default to 10s, short enough to expire mid-test on a
+    // busy machine. Tests end holds on purpose through the admin API.
+    env: { CHECKOUT_HOLD_TTL_MS: "60000" },
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
   },
